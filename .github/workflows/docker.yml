@@ -2,11 +2,11 @@ name: docker
 
 on:
   push:
-    tags:
-      - v*
+    branches:
+      - master
 
 jobs:
-  main:
+  xmandump:
     runs-on: ubuntu-latest
     steps:
       - name: Set up QEMU
@@ -19,11 +19,10 @@ jobs:
           registry: ghcr.io
           username: void-robot
           password: ${{ secrets.CR_PAT }}
-      - name: Set version
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Build and push
         id: docker_build
         uses: docker/build-push-action@v2
         with:
+          context: xmandump
           push: true
-          tags: "ghcr.io/${{ github.repository }}:${{ env.RELEASE_VERSION }}"
+          tags: "ghcr.io/void-linux/xmandump:${{github.sha}}"
